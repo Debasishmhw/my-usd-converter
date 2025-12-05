@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Debashish - USD to INR Converter</title>
+
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+    :root {
+        --bg-gradient: linear-gradient(135deg, #6a11cb, #2575fc);
+        --box-bg: rgba(255, 255, 255, 0.95);
+        --text: #222;
+        --primary: #4a6cf7;
+        --shadow: rgba(0,0,0,0.15);
+        --footer-bg: rgba(255,255,255,0.9);
+        --btn-hover: #5a7ef7;
+    }
+
+    body.dark {
+        --bg-gradient: linear-gradient(135deg, #141e30, #243b55);
+        --box-bg: rgba(25, 25, 25, 0.95);
+        --text: #eaeaea;
+        --primary: #6d8bff;
+        --shadow: rgba(255,255,255,0.05);
+        --footer-bg: rgba(25,25,25,0.9);
+        --btn-hover: #7a9bff;
+    }
+
+    body {
+        font-family: "Poppins", sans-serif;
+        background: var(--bg-gradient);
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        overflow-y: auto;
+        transition: .5s;
+        color: var(--text);
+    }
+
+    .logo {
+        text-align: center;
+        font-size: 2.5em;
+        font-weight: 700;
+        color: white;
+        padding: 25px 0 0 0;
+        letter-spacing: 1px;
+        text-shadow: 1px 1px 5px rgba(0,0,0,0.3);
+    }
+
+    .dark-icon {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        font-size: 28px;
+        cursor: pointer;
+        background: var(--box-bg);
+        padding: 10px 14px;
+        border-radius: 50%;
+        box-shadow: 0 0 15px var(--shadow);
+        transition: .3s;
+        user-select: none;
+        z-index: 9999;
+    }
+
+    .box {
+        width: 92%;
+        max-width: 440px;
+        background: var(--box-bg);
+        padding: 30px;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px var(--shadow);
+        backdrop-filter: blur(10px);
+        margin: 20px auto;
+        animation: fadeInUp .8s ease;
+        transition: transform .3s, box-shadow .3s;
+    }
+
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(30px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    h2 {
+        text-align: center;
+        margin-top: 0;
+        color: var(--primary);
+        font-size: 1.6em;
+    }
+
+    label {
+        font-weight: 600;
+        color: var(--text);
+        margin-top: 15px;
+        display: block;
+    }
+
+    input {
+        width: 100%;
+        padding: 14px;
+        margin-top: 8px;
+        border-radius: 14px;
+        border: 1px solid #ccc;
+        font-size: 16px;
+        transition: .3s;
+        outline: none;
+    }
+
+    input:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 12px var(--primary);
+    }
+
+    button {
+        width: 100%;
+        padding: 16px;
+        margin-top: 20px;
+        font-size: 18px;
+        border: none;
+        border-radius: 14px;
+        background: var(--primary);
+        color: white;
+        cursor: pointer;
+        transition: all .3s ease;
+        font-weight: 600;
+        box-shadow: 0 5px 15px var(--shadow);
+    }
+
+    button:hover {
+        transform: translateY(-3px);
+        background: var(--btn-hover);
+        box-shadow: 0 8px 25px var(--shadow);
+    }
+
+    .result {
+        background: var(--bg-gradient);
+        padding: 16px;
+        border-radius: 14px;
+        margin-top: 20px;
+        font-size: 18px;
+        font-weight: bold;
+        color: white;
+        text-align: center;
+        box-shadow: inset 0 0 12px rgba(0,0,0,0.2);
+        cursor: pointer;
+        transition: transform .2s;
+    }
+
+    .result:hover {
+        transform: scale(1.03);
+    }
+
+    #toast {
+        position: fixed;
+        bottom: 30px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: var(--primary);
+        color: #fff;
+        padding: 12px 20px;
+        border-radius: 12px;
+        opacity: 0;
+        pointer-events: none;
+        transition: .4s;
+        font-size: 16px;
+        z-index: 99999;
+    }
+
+    footer {
+        text-align: center;
+        padding: 18px 0;
+        background: var(--footer-bg);
+        color: var(--text);
+        font-size: 15px;
+        letter-spacing: 0.5px;
+    }
+
+    footer span {
+        color: red;
+        font-weight: bold;
+    }
+</style>
+</head>
+<body>
+
+<div class="logo">Debashish</div>
+<div class="dark-icon" id="darkModeIcon" onclick="toggleDarkMode()">🌙</div>
+
+<div class="box">
+    <h2>USD to INR Converter Pro</h2>
+
+    <label>USD to INR Rate:</label>
+    <input type="number" id="rate" value="90" step="0.01">
+
+    <label>Enter USD Amount:</label>
+    <input type="number" id="usd" value="1" step="0.001">
+
+    <button onclick="convert()">Convert</button>
+
+    <div class="result" id="inrResult" onclick="copyText('inrResult')">INR: 0</div>
+    <div class="result" id="divResult" onclick="copyText('divResult')">USD / 1000: 0</div>
+</div>
+
+<footer>Made with <span>❤️</span></footer>
+<div id="toast">Copied!</div>
+
+<script>
+const usdInput = document.getElementById("usd");
+const rateInput = document.getElementById("rate");
+
+// Auto convert on input
+usdInput.addEventListener("input", () => convert());
+rateInput.addEventListener("input", () => convert());
+
+function convert() {
+    let rate = parseFloat(document.getElementById("rate").value);
+    let usd  = parseFloat(document.getElementById("usd").value);
+
+    if(isNaN(rate) || isNaN(usd)) return;
+
+    let inr = usd * rate;
+    let per1000 = usd / 1000;
+
+    document.getElementById("inrResult").innerText = "INR: " + inr.toFixed(5);
+    document.getElementById("divResult").innerText = "USD / 1000: " + per1000.toFixed(5);
+
+    navigator.clipboard.writeText(per1000.toFixed(5));
+    showToast("Auto Copied: " + per1000.toFixed(5));
+}
+
+function copyText(id) {
+    let text = document.getElementById(id).innerText.replace(/.*: /, "");
+    navigator.clipboard.writeText(text);
+    showToast("Copied: " + text);
+}
+
+function toggleDarkMode() {
+    document.body.classList.toggle("dark");
+    document.getElementById("darkModeIcon").innerText =
+        document.body.classList.contains("dark") ? "☀️" : "🌙";
+    localStorage.setItem("theme",
+        document.body.classList.contains("dark") ? "dark" : "light"
+    );
+}
+
+if (localStorage.getItem("theme") === "dark") {
+    document.body.classList.add("dark");
+    document.getElementById("darkModeIcon").innerText = "☀️";
+}
+
+function showToast(msg) {
+    let toast = document.getElementById("toast");
+    toast.innerText = msg;
+    toast.style.opacity = "1";
+    setTimeout(() => toast.style.opacity = "0", 1600);
+}
+
+// Initial convert on page load
+window.addEventListener("load", () => convert());
+</script>
+</body>
+</html>
